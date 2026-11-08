@@ -101,6 +101,38 @@
                     </Border>
                 </Grid>
             </local:MyCard>
+            <local:MyCard x:Name="CardColor" Margin="0,0,0,15" Title="配色">
+                <StackPanel Margin="25,40,25,20">
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,16" Opacity="0.8"
+                               Text="界面主色相固定保持在蓝色区间（这是 PCL 分发许可的要求），这里提供两种蓝色浓度不同的方案。" />
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Name" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="方案" Margin="0,0,20,0" />
+                        <local:MyRadioBox Grid.Column="1" Height="22" Text="龙猫蓝" x:Name="RadioColorPreset0" Margin="0,0,25,0"
+                                          local:SettingService.Key="UiColorPreset" local:SettingService.Value="0" />
+                        <local:MyRadioBox Grid.Column="2" Height="22" Text="浅水蓝" x:Name="RadioColorPreset1"
+                                          local:SettingService.Key="UiColorPreset" local:SettingService.Value="1" />
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Name" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="预览" Margin="0,0,20,0" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Border Width="44" Height="44" CornerRadius="12" Background="{DynamicResource ColorBrush3}" ToolTip="主色" />
+                            <Border Width="44" Height="44" CornerRadius="12" Margin="10,0,0,0" Background="{DynamicResource ColorBrush4}" ToolTip="亮主色" />
+                            <Border Width="44" Height="44" CornerRadius="12" Margin="10,0,0,0" Background="{DynamicResource ColorBrush5}" ToolTip="主色容器" />
+                            <Border Width="44" Height="44" CornerRadius="12" Margin="10,0,0,0" Background="{DynamicResource ColorBrush6}" ToolTip="次要容器" />
+                            <Border Width="44" Height="44" CornerRadius="12" Margin="10,0,0,0" Background="{DynamicResource ColorBrushSurfaceContainer}" ToolTip="表面容器" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </local:MyCard>
             <local:MyCard x:Name="CardBackground" Margin="0,0,0,15" Title="背景图片">
                 <StackPanel Margin="25,40,25,20">
                     <Grid x:Name="PanBackgroundSuit" Height="28" Margin="0,0,0,10" Visibility="Collapsed">
@@ -329,9 +361,8 @@
                         <TextBlock Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left" Text="更多 子页面" />
                         <local:MyCheckBox Height="22" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2" Text="帮助" x:Name="CheckHiddenOtherHelp" local:SettingService.Key="UiHiddenOtherHelp" />
                         <local:MyCheckBox Height="22" VerticalAlignment="Center" Grid.Row="3" Grid.Column="3" Text="关于与鸣谢" x:Name="CheckHiddenOtherAbout" local:SettingService.Key="UiHiddenOtherAbout" />
-                        <local:MyCheckBox Height="22" VerticalAlignment="Center" Grid.Row="3" Grid.Column="4" Text="百宝箱" x:Name="CheckHiddenOtherTest" local:SettingService.Key="UiHiddenOtherTest" />
-                        <local:MyCheckBox Height="22" VerticalAlignment="Center" Grid.Row="3" Grid.Column="5" Text="反馈" x:Name="CheckHiddenOtherFeedback" local:SettingService.Key="UiHiddenOtherFeedback" />
-                        <local:MyCheckBox Height="22" VerticalAlignment="Center" Grid.Row="3" Grid.Column="6" Text="新功能投票" x:Name="CheckHiddenOtherVote" local:SettingService.Key="UiHiddenOtherVote" />
+                        <local:MyCheckBox Height="22" VerticalAlignment="Center" Grid.Row="3" Grid.Column="4" Text="反馈" x:Name="CheckHiddenOtherFeedback" local:SettingService.Key="UiHiddenOtherFeedback" />
+                        <local:MyCheckBox Height="22" VerticalAlignment="Center" Grid.Row="3" Grid.Column="5" Text="新功能投票" x:Name="CheckHiddenOtherVote" local:SettingService.Key="UiHiddenOtherVote" />
                         <TextBlock Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Left" Text="特定功能" />
                         <local:MyCheckBox Height="22" VerticalAlignment="Center" Grid.Row="4" Grid.Column="2" Text="邮箱隐藏" x:Name="CheckLauncherEmail" local:SettingService.Key="UiLauncherEmail" ToolTip="隐藏第三方登录的账号邮箱显示，以避免隐私泄露。&#xa;此选项的更改将在重启启动器后生效。" />
                         <local:MyCheckBox Height="22" VerticalAlignment="Center" Grid.Row="4" Grid.Column="3" Text="版本管理" x:Name="CheckHiddenFunctionSelect" local:SettingService.Key="UiHiddenFunctionSelect" ToolTip="隐藏启动按钮下方的版本选择与版本设置入口。" />

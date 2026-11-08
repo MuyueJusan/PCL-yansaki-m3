@@ -443,7 +443,7 @@ Public Class FormMain
             Telemetry("启动")
             '开源版本提示
             If VersionBranchMain = "OpenSource" Then
-                MyMsgBox($"该版本中无法使用以下特性：{vbCrLf}- 更新与联网通知：避免滥用隐患{vbCrLf}- 主题切换：这是需要赞助解锁的纪念性质的功能，别让赞助者太伤心啦……{vbCrLf}- 百宝箱：开发早期往里面塞了些开发工具，整理起来太麻烦了……{vbCrLf}{vbCrLf}注：CurseForge API 与微软正版登录均已内置凭据，开箱可用。想换成自己的，可在 exe 同级新建 PCL\CurseForgeKey.txt 或 PCL\MsClientId.txt，文件里只写内容本身，重启 PCL 即生效（优先级高于内置值）。", "开源版本说明")
+                MyMsgBox($"该版本中无法使用以下特性：{vbCrLf}- 更新与联网通知：避免滥用隐患{vbCrLf}- 主题切换：这是需要赞助解锁的纪念性质的功能，别让赞助者太伤心啦……{vbCrLf}{vbCrLf}注：CurseForge API 与微软正版登录均已内置凭据，开箱可用。想换成自己的，可在 exe 同级新建 PCL\CurseForgeKey.txt 或 PCL\MsClientId.txt，文件里只写内容本身，重启 PCL 即生效（优先级高于内置值）。", "开源版本说明")
             End If
         End Sub, "初始化", ThreadPriority.Lowest)
 

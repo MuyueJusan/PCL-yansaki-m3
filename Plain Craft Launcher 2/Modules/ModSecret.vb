@@ -134,6 +134,39 @@ Friend Module ModSecret
     Public ThemeNow As Integer = -1
     Public ColorHue As Integer = 210, ColorSat As Integer = 85, ColorLightAdjust As Integer = 0, ColorHueTopbarDelta As OneOf(Of Integer, Integer()) = 0
     Public ThemeDontClick As Integer = 0
+
+    ''' <summary>
+    ''' 配色方案编号。0 = 龙猫蓝（上游默认），1 = 浅水蓝。
+    ''' 两套方案都落在蓝色色相区间内，以满足 PCL 分发有限许可对界面主色相的要求。
+    ''' </summary>
+    Public ColorPreset As Integer = 0
+
+    ''' <summary>
+    ''' 把 ColorPreset 换算成 ColorHue / ColorSat / ColorLightAdjust 三个调色参数。
+    ''' 浅水蓝：色相往青蓝一侧挪一点，彩度压低、整体提亮，观感更轻更"水"。
+    ''' </summary>
+    Private Sub ApplyColorPreset()
+        Select Case ColorPreset
+            Case 1
+                ColorHue = 202
+                ColorSat = 68
+                ColorLightAdjust = 6
+            Case Else
+                ColorHue = 210
+                ColorSat = 85
+                ColorLightAdjust = 0
+        End Select
+    End Sub
+
+    ''' <summary>
+    ''' 从设置同步配色方案编号。设置模块尚未就绪时保持当前值。
+    ''' </summary>
+    Private Sub SyncColorPreset()
+        Try
+            ColorPreset = Settings.Get(Of Integer)("UiColorPreset")
+        Catch ex As Exception
+        End Try
+    End Sub
     ''' <summary>
     ''' 当前主题对应的 CIELAB 色相角（由 ColorHue 换算而来，供调色板与背景使用）。
     ''' </summary>
@@ -143,6 +176,10 @@ Friend Module ModSecret
         Try
             If ThemeNow = NewTheme AndAlso NewTheme >= 0 Then Return
             If NewTheme >= 0 Then ThemeNow = NewTheme
+
+            '配色方案会覆盖色相/彩度/亮度三个参数，必须在换算 Lab 色相之前决定
+            SyncColorPreset()
+            ApplyColorPreset()
 
             '把用户设定的 HSL 色相换算成 CIELAB 色相角（两者刻度完全不同，必须换算）
             ThemeLabHue = SeedLabHue(ColorHue, ColorSat)
@@ -192,8 +229,10 @@ Friend Module ModSecret
             ColorOnPrimaryContainer = ToneC(Hue, CPrimary, 10)
             ColorSecondaryContainer = Color6
             ColorOnSecondaryContainer = ToneC(Hue, CSecondary, 10)
-            ColorTertiary = ToneC(Hue + 60, CTertiary, 40 + Adj)
-            ColorTertiaryContainer = ToneC(Hue + 60, CTertiary, 90)
+            'M3 的 tertiary 惯例是 +60° 的邻近色相，但那会跑出蓝色区（蓝 +60° 已经是紫红），
+            '与分发许可里"界面主色相必须为蓝色"的要求冲突，所以只做 10° 的同区偏移。
+            ColorTertiary = ToneC(Hue - 10, CTertiary, 40 + Adj)
+            ColorTertiaryContainer = ToneC(Hue - 10, CTertiary, 90)
             ColorOutline = ColorGray3
             ColorOutlineVariant = ColorBg0
             ColorError = New MyColor(186, 26, 26)
