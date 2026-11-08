@@ -1,0 +1,24 @@
+﻿<Border x:Class="MyButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FocusVisualStyle="{x:Null}" x:Name="PanBack"
+             Focusable="True" UseLayoutRounding="False" SnapsToDevicePixels="False" CornerRadius="12" Background="{StaticResource ColorBrushSemiTransparent}">
+    <!--
+        M3 Expressive 按钮：12px 圆角矩形 + 1px 描边（厚度恒定，避免状态切换时尺寸跳动）。
+        配色由 code-behind 按语义角色驱动：
+          Normal    -> Outlined       透明/浅底 + outline 描边 + onSurfaceVariant 文字
+          Highlight -> Filled         实心 primary 底 + onPrimary 文字，描边同背景色（视觉隐形）
+          Red       -> Error container 浅红底 + onErrorContainer 文字
+        文字色与描边色已解耦：LabText.Foreground 不再绑定 BorderBrush，由 RefreshColor 单独设置。
+    -->
+    <Border CornerRadius="12" x:Name="PanFore" BorderThickness="1" BorderBrush="{DynamicResource ColorBrushOnSurfaceVariant}" RenderTransformOrigin="0.5,0.5" Background="{StaticResource ColorBrushHalfWhite}">
+        <Border.RenderTransform>
+            <ScaleTransform />
+        </Border.RenderTransform>
+        <TextBlock TextOptions.TextFormattingMode="Display" SnapsToDevicePixels="True" TextTrimming="None" HorizontalAlignment="Center" x:Name="LabText" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Foreground="{DynamicResource ColorBrushOnSurfaceVariant}" FontSize="13" FontWeight="Medium" IsHitTestVisible="False">
+            <TextBlock.RenderTransform>
+                <ScaleTransform />
+            </TextBlock.RenderTransform>
+        </TextBlock>
+    </Border>
+</Border>

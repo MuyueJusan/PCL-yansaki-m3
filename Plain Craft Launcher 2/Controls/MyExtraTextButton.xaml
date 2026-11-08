@@ -1,0 +1,34 @@
+﻿<Grid
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:PCL"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    x:Name="PanBack" mc:Ignorable="d" x:Class="MyExtraTextButton"
+    RenderTransformOrigin="0.5,0.5" Height="52" Margin="20" Cursor="Hand">
+    <Grid.RenderTransform>
+        <ScaleTransform ScaleX="0" ScaleY="0" />
+    </Grid.RenderTransform>
+    <!-- M3 扩展 FAB -->
+    <Border x:Name="PanClick" BorderThickness="0.001" Background="{StaticResource ColorBrushSemiTransparent}" 
+            CornerRadius="{Binding ActualHeight, ConverterParameter=0.4, Converter={StaticResource MultiplicationConverter}, ElementName=PanBack, Mode=OneWay}"/>
+    <Grid x:Name="PanScale" IsHitTestVisible="False" RenderTransformOrigin="0.5,0.5" Margin="0,10,0,0">
+        <Grid.RenderTransform>
+            <ScaleTransform />
+        </Grid.RenderTransform>
+        <Border x:Name="PanColor" BorderThickness="0.001" Background="{DynamicResource ColorBrushPrimary}"
+                CornerRadius="{Binding ActualHeight, ConverterParameter=0.4, Converter={StaticResource MultiplicationConverter}, ElementName=PanBack, Mode=OneWay}">
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="2" Direction="270" BlurRadius="14" Opacity="0.30" Color="#747782" RenderingBias="Performance" />
+            </Border.Effect>
+        </Border>
+        <StackPanel Orientation="Horizontal" Margin="20,0" SnapsToDevicePixels="False" UseLayoutRounding="False">
+            <Path x:Name="Path" Stretch="Uniform" Margin="2,12,0,12" Fill="{DynamicResource ColorBrushOnPrimary}" RenderTransformOrigin="0.5,0.5">
+                <Path.RenderTransform>
+                    <ScaleTransform />
+                </Path.RenderTransform>
+            </Path>
+            <TextBlock x:Name="LabText" VerticalAlignment="Center" Foreground="{DynamicResource ColorBrushOnPrimary}" FontSize="16" 
+                       Margin="12,0,0,0.8" />
+        </StackPanel>
+    </Grid>
+</Grid>

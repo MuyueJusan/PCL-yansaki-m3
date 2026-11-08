@@ -1,0 +1,19 @@
+﻿<Border x:Class="MyHint" x:Name="PanBack"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:PCL"
+             FocusVisualStyle="{x:Null}"
+             UseLayoutRounding="True" SnapsToDevicePixels="True" HorizontalAlignment="Stretch" BorderThickness="0" BorderBrush="#99BA1A1A" CornerRadius="12">
+    <!-- M3 提示条：大圆角 tonal 容器 + 4dp 左侧语义色条 -->
+    <Grid UseLayoutRounding="False" SnapsToDevicePixels="False">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Background="{Binding BorderBrush, ElementName=PanBack}" CornerRadius="12,0,0,12" />
+        <TextBlock IsHitTestVisible="False" x:Name="LabText" Grid.Column="1" LineHeight="16" Margin="9,0,0,-1" Padding="3,9,0,9" VerticalAlignment="Center" TextWrapping="Wrap" />
+        <local:MyIconButton x:Name="BtnClose" Grid.Column="2" Visibility="Collapsed" Theme="Custom" Margin="0,0,8,0" Height="20" Width="20" VerticalAlignment="Center" Logo="F1 M2,0 L0,2 8,10 0,18 2,20 10,12 18,20 20,18 12,10 20,2 18,0 10,8 2,0Z"
+                           ToolTip="不再提示" />
+    </Grid>
+</Border>
