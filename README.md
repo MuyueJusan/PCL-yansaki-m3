@@ -21,6 +21,9 @@
 > with their Microsoft account to prove they own the game before it can be launched. The flow is
 > Microsoft's standard OAuth 2.0 device code flow; the launcher never sees or stores the password.
 > This fork does **not** bypass, weaken, or disable any authentication, ownership, or license check.
+> Offline (unauthenticated) login is additionally gated: it stays disabled until one Microsoft
+> sign-in has been completed successfully on the same machine, so the launcher cannot be used to
+> play the game without ever verifying ownership.
 >
 > **License.** This fork continues to be distributed under PCL's original license — see
 > [`LICENCE`](LICENCE). The complete source is public in this repository, as that license requires.
@@ -53,7 +56,7 @@
   `MyComboBox`、`MyHint`、`MyCard`、`MyListItem`、`MyMsg*` 系列、`FormMain` 标题栏等全部重写。
 - **排版**：按 M3 type scale 调整字号 / 字重 / 行高。
 
-另外做了两处非外观改动：
+另外做了三处非外观改动：
 
 - **配色方案**：设置 → 个性化 → 配色，可在「龙猫蓝」（上游默认，主色 `#275EA8`）与
   「浅水蓝」（主色 `#0174A9`，色相偏青、彩度更低、整体提亮）之间切换，即时生效并记忆。
@@ -61,6 +64,12 @@
   赞助解锁的主题功能）。对应设置项为 `UiColorPreset`，实现见 `ModSecret.ApplyColorPreset`。
 - **移除「百宝箱」**：`更多 → 百宝箱` 的侧栏入口、对应的隐藏开关（`UiHiddenOtherTest`）
   与设置项一并删除；`PageOtherTest` 保留为空桩，仅维持外部调用的静态成员签名。
+- **离线登录前置验证**：离线登录要求本机先成功完成过一次正版（微软）登录，验证状态记录在
+  `LoginMsVerified` 设置里，在 `McLoginMsStart` 成功结束时置位。未验证时三处一起拦：
+  登录页的「离线登录」会说明原因并自动切回正版登录；版本设置里的「仅离线登录」不可选，
+  已存成该值的版本会按「仅正版」处理；`McLaunchPrecheck` 也会直接拒绝离线启动
+  （这条覆盖批量启动、快捷方式等绕过界面的路径）。这是 Minecraft EULA 与 PCL 分发许可
+  第 4 条对购买劝导的要求。
 
 **兼容性说明**：所有原有资源键名（`ColorBrush*` / `ColorObject*`）、控件 `x:Name`、
 以及 `Color1`–`Color8` 的语义顺序均完整保留。因此项目中约 200 处

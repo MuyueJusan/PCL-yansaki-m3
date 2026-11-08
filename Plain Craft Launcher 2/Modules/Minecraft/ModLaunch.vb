@@ -244,6 +244,12 @@ NextInner:
         Dim CheckResult As String = ""
         RunInUiWait(Sub() CheckResult = McLoginAble(McLoginInput()))
         If CheckResult <> "" Then Throw New ArgumentException(CheckResult)
+        '离线登录的前置条件：必须先完成一次正版登录
+        '这里放在启动预检测里而不是只拦界面，是为了让批量启动、快捷方式等路径也绕不过去
+        If Settings.Get(Of McLoginType)("LoginType") = McLoginType.Legacy AndAlso Not McLoginMsVerified() Then
+            Throw New Exception("$离线登录需要先完成一次正版登录。" & vbCrLf &
+                                "请先在登录页使用正版账号登录一次，之后就可以正常使用离线登录了。")
+        End If
         '求赞助
         If BuildType = BuildTypes.Release AndAlso CurrentLaunchOptions?.SaveBatch Is Nothing Then '保存脚本时不提示
             RunInNewThread(
@@ -474,6 +480,33 @@ NextInner:
     '登录主模块加载器
     Public McLoginLoader As New LoaderTask(Of McLoginData, McLoginResult)("登录", AddressOf McLoginStart, AddressOf McLoginInput, ThreadPriority.BelowNormal) With
         {.ReloadTimeout = 1, .ProgressWeight = 15, .Block = False}
+
+    ''' <summary>
+    ''' 本机是否已成功完成过至少一次正版（微软）登录。
+    ''' 离线登录以此为前提，用于满足 Minecraft EULA 与 PCL 分发许可对购买劝导的要求。
+    ''' </summary>
+    Public Function McLoginMsVerified() As Boolean
+        Return Settings.Get(Of Boolean)("LoginMsVerified")
+    End Function
+
+    ''' <summary>
+    ''' 弹窗说明「离线登录需要先完成一次正版登录」。
+    ''' 返回 True 表示用户选择去登录正版，由调用方负责切到正版登录页。
+    ''' </summary>
+    Public Function McLoginLegacyGateDialog() As Boolean
+        Select Case MyMsgBox(
+            "离线登录需要先完成一次正版登录。" & vbCrLf &
+            "用正版账号登录一次之后，本机会记住这次验证，离线登录就可以正常使用了。" & vbCrLf & vbCrLf &
+            "如果还没有正版账号，可以先购买支持一下；已经买过的，用购买游戏的那个微软账号登录一次即可。",
+            "离线登录需要正版验证", "去登录正版", "购买正版", "返回",
+            Button2Action:=Sub() OpenWebsite("https://www.xbox.com/zh-cn/games/store/minecraft-java-bedrock-edition-for-pc/9nxp44l49shj"))
+            Case 1
+                Return True
+            Case Else
+                Return False
+        End Select
+    End Function
+
     Public Function McLoginInput() As McLoginData
         Dim LoginData As McLoginData = Nothing
         Dim LoginType = Settings.Get(Of McLoginType)("LoginType")
@@ -606,6 +639,7 @@ Relogin:
 SkipLogin:
         McLaunchLog($"微软登录结束，AccessToken 将在 {DateTimeOffset.FromUnixTimeSeconds(ExpiresAt).LocalDateTime} 过期")
         Settings.Set("HintBuy", True) '关闭正版购买提示
+        Settings.Set("LoginMsVerified", True) '已成功完成一次正版登录，离线登录据此解锁
         If ThemeUnlock(10, False) Then MyMsgBox("感谢你对正版游戏的支持！" & vbCrLf & "隐藏主题 跳票红 已解锁！", "提示")
     End Sub
     Private Sub McLoginServerStart(Data As LoaderTask(Of McLoginServer, McLoginResult))

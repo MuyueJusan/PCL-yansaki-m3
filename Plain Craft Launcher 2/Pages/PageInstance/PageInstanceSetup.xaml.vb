@@ -53,8 +53,11 @@
             UpdateJavaList()
 
             '服务器
-            ComboServerLogin.SelectedIndex = Settings.Get(Of Integer)("VersionServerLogin", Instance:=PageInstanceLeft.Instance)
-            ComboServerLoginLast = ComboServerLogin.SelectedIndex
+            '离线登录需要先完成一次正版登录，未验证时不允许把版本设成「仅离线」
+            Dim ServerLoginType As Integer = Settings.Get(Of Integer)("VersionServerLogin", Instance:=PageInstanceLeft.Instance)
+            If ServerLoginType = 2 AndAlso Not McLoginMsVerified() Then ServerLoginType = 0
+            ComboServerLogin.SelectedIndex = ServerLoginType
+            ComboServerLoginLast = ServerLoginType
             UpdateServerLoginUI()
 
             '高级设置
@@ -346,6 +349,12 @@ PreFin:
     Private ComboServerLoginLast As Integer
     Private Sub ComboServerLogin_Changed() Handles ComboServerLogin.SelectionChanged, TextServerNide.ValidatedTextChanged, TextServerAuthServer.ValidatedTextChanged, TextServerAuthRegister.ValidatedTextChanged
         If AniControlEnabled <> 0 Then Return
+        '离线登录的前置条件：必须先完成一次正版登录
+        If ComboServerLogin.SelectedIndex = 2 AndAlso Not McLoginMsVerified() Then
+            McLoginLegacyGateDialog()
+            ComboServerLogin.SelectedIndex = ComboServerLoginLast '还原
+            Return
+        End If
         UpdateServerLoginUI()
         '检查是否输入正确，正确才触发设置改变
         If ComboServerLogin.SelectedIndex = 3 AndAlso Not TextServerNide.IsValidated Then Return

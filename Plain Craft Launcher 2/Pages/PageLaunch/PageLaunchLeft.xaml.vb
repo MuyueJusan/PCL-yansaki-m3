@@ -299,9 +299,19 @@ Public Class PageLaunchLeft
         Else
             LoginPageType = Settings.Get(Of Integer)("LoginPageType")
         End If
+        '离线登录需要先完成一次正版登录；某个版本若被设为「仅离线」，未验证时退回「仅正版」
+        If LoginPageType = 2 AndAlso Not McLoginMsVerified() Then
+            Logger.Info("该版本被设置为仅离线登录，但尚未完成正版登录，已改用仅正版登录")
+            LoginPageType = 1
+        End If
         Select Case LoginPageType
             Case 0 '正版或离线
 UnknownType:
+                '上次退出时若停在离线登录，而本机还没完成过正版登录，则自动切回正版登录
+                If RadioLoginType0.Checked AndAlso Not McLoginMsVerified() Then
+                    Hint("离线登录需要先完成一次正版登录，已切换到正版登录。", HintType.Red)
+                    RadioLoginType5.Checked = True
+                End If
                 If RadioLoginType5.Checked Then
                     If Settings.Get(Of String)("CacheMsV2Access") = "" Then
                         Type = PageType.Ms
@@ -371,7 +381,14 @@ UnknownType:
         If Control IsNot Nothing Then Control.Checked = True
     End Sub
     Private Sub RadioLoginType_Change(sender As Object, raiseByMouse As Boolean) Handles RadioLoginType0.Check, RadioLoginType5.Check
-        If raiseByMouse Then RefreshPage(True, True)
+        If Not raiseByMouse Then Return
+        '离线登录的前置条件：必须先完成一次正版登录
+        If RadioLoginType0.Checked AndAlso Not McLoginMsVerified() Then
+            McLoginLegacyGateDialog() '无论用户选什么，都先把原因说清楚
+            RadioLoginType5.Checked = True '自动切回正版登录
+            Return
+        End If
+        RefreshPage(True, True)
     End Sub
 
 #End Region

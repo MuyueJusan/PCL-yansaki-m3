@@ -14,6 +14,7 @@ Public Class Settings
         New Setting("HintHide", False, Source:=Sources.Registry),
         New Setting("HintHandInstall", False, Source:=Sources.Registry),
         New Setting("HintBuy", False, Source:=Sources.Registry),
+        New Setting("LoginMsVerified", False, Source:=Sources.Registry), '是否已在本机成功完成过一次正版登录；离线登录以此为前提
         New Setting("HintClearRubbish", 0, Source:=Sources.Registry),
         New Setting("HintUpdateMod", False, Source:=Sources.Registry),
         New Setting("HintCustomCommand", False, Source:=Sources.Registry),
